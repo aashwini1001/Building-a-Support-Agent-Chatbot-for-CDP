@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDP Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+    .chat-box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      background: white;
+    }
+    .input-box {
+      margin-top: 10px;
+      display: flex;
+    }
+    .input-box input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .input-box button {
+      padding: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-box">
+      <input type="text" id="user-input" placeholder="Ask a question...">
+      <button onclick="askQuestion()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    async function askQuestion() {
+      const userInput = document.getElementById("user-input").value;
+      const chatBox = document.getElementById("chat-box");
+
+      // Display user input
+      chatBox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+      document.getElementById("user-input").value = "";
+
+      // Send request to backend
+      const response = await fetch("http://localhost:5000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: userInput }),
+      });
+
+      const data = await response.json();
+
+      // Display chatbot response
+      chatBox.innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
